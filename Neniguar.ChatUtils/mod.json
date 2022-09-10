@@ -1,0 +1,48 @@
+{
+    "Name": "NeinguarChatUtils",
+    "Description" : "Adds the ability for players to type in colour",
+    "Version" : "0.0.1",
+	"LoadPriority": 2,
+	"ConVars": [
+		{
+			"Name": "messageFilter",
+			"DefaultValue": "1"
+		},		
+		{
+			"Name": "shouldBlock",
+			"DefaultValue": "0"
+		},
+		{
+			"Name": "shouldInform",
+			"DefaultValue": "0"
+		},
+		{
+			"Name": "shouldShame",
+			"DefaultValue": "0"
+		},
+		{
+			"Name": "ResponseOnBlock",
+			"DefaultValue": "Your message contains offensive speach and was not send to the chat"
+		},
+		{
+			"Name": "ResponseOnReplace",
+			"DefaultValue": "Your message contains offensive speach and was altered"
+		},
+		{
+			"Name": "ShameMessage",
+			"DefaultValue": "I am really bad at this game but my mom doesnt buy me a new one"
+		}
+
+	],
+
+	"Scripts": [
+		{
+			"Path": "Neinguar.ChatColours.nut",
+			"RunOn": "SERVER",
+
+			"ServerCallback": {
+				"After": "NeinguarChatColoursInit"
+			}
+		}
+	]
+}
