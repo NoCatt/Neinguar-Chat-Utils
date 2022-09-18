@@ -14,11 +14,11 @@
 		},
 		{
 			"Name": "shouldInform",
-			"DefaultValue": "0"
+			"DefaultValue": "1"
 		},
 		{
 			"Name": "shouldShame",
-			"DefaultValue": "0"
+			"DefaultValue": "1"
 		},
 		{
 			"Name": "ResponseOnBlock",
@@ -31,8 +31,39 @@
 		{
 			"Name": "ShameMessage",
 			"DefaultValue": "I am really bad at this game but my mom doesnt buy me a new one"
+		},
+		{
+			"Name": "BannedWords",
+			"DefaultValue": "Faggot,Nigger"
+		},
+		{
+			"Name": "AnnounceAdmin",
+			"DefaultValue": "1"
+		},
+		{	//Seperate the names with just a ","
+			"Name": "AdminNames",
+			"DefaultValue": "Neinguar,OtherNameHere"
+		},
+		{
+			"Name": "AnnounceHost",
+			"DefaultValue": "0"
+		},
+		{
+			"Name": "HostNames",
+			"DefaultValue": "Neinguar"
+		},
+		{
+			"Name": "FSU_RGB_OPEN",
+			"DefaultValue": "("
+		},
+		{
+			"Name": "FSU_RGB_CLOSE",
+			"DefaultValue": ")"
+		},
+		{
+			"Name": "FSU_RGB_DIVIDE",
+			"DefaultValue": ","
 		}
-
 	],
 
 	"Scripts": [
