@@ -16,6 +16,9 @@ table<string,int>ColourVals ={
 ["@yellow"] = 11
 }
 
+table<string, void functionref(entity, array<string>) > RegisteredCommands = {}
+
+
 array<string> Banned_words = []
 array<string> AdminNames = []
 array<string> HostNames = []
@@ -26,16 +29,18 @@ bool shouldInform = true
 bool ShouldShamePlayer = true
 bool AnnounceAdmin
 bool AnnounceHosts
+bool SendwelcomeMessage
 
 string ResponseOnBlock = "Your message contains offensive speach and was not send to the chat"
 string ShameMessage = "I am really bad at this game but my mom doesnt buy me a new one"
 string ResponseOnReplace = "Your message contains offensive speach and was altered"
-
+string welcomeMessage
 
 string RGB_OPEN
 string RGB_CLOSE
 string RGB_DIVIDE
 
+string CommandPrefix
 
 void function NeinguarChatColoursInit() {
     AddCallback_OnReceivedSayTextMessage( AddChatColours )
@@ -55,21 +60,41 @@ void function NeinguarChatColoursInit() {
     ShouldShamePlayer = GetConVarBool( "shouldShame" )
     AnnounceAdmin = GetConVarBool("AnnounceAdmin")
     AnnounceHosts = GetConVarBool("AnnounceHost")
+    SendwelcomeMessage = GetConVarBool("SendWelcomeMessage")
 
     ResponseOnBlock = GetConVarString( "ResponseOnBlock" )
     ResponseOnReplace = GetConVarString( "ResponseOnReplace" )
     ShameMessage = GetConVarString( "ShameMessage" )
+    welcomeMessage = GetConVarString("WelcomeMessage")
+    CommandPrefix = GetConVarString("CommandPrefix")
+
 
     RGB_OPEN = GetConVarString("FSU_RGB_OPEN") // stole that from my mod of FSU thus the name, i still made it 
     RGB_CLOSE = GetConVarString("FSU_RGB_CLOSE")
     RGB_DIVIDE = GetConVarString("FSU_RGB_DIVIDE")
+
+    RegisteredCommands["colours"] <- CommandColoursFunc
 }
 
+void function CommandColoursFunc(entity player, array<string> args){
+    string message = "Available colours are:"
+    foreach(key,value in ColourVals)
+        message = message + key.slice(1)+ ","
+    message = message + "\n you can also use RGB with '@(r,g,b)Text here'"
+    Chat_ServerPrivateMessage(player, message, false)
+} 
+
 ClServer_MessageStruct function AddChatColours ( ClServer_MessageStruct message ){
-string LowerMessage  = message.message.tolower()
-  string noSpaceMessage = StringReplace(message.message.tolower(), " ", "", true, true) // wow what a great way to write readable and cool code, anyway thats all the spaces removed
-  bool OnOffense = false
-  if(MessageFilter){
+    string msg = lstrip(message.message)
+    var prefixIndex = msg.find(CommandPrefix);
+    if (prefixIndex != null && expect int(prefixIndex) == 0) 
+    {
+        return HandleCommands(message)
+    }
+    string LowerMessage  = message.message.tolower()
+    string noSpaceMessage = StringReplace(message.message.tolower(), " ", "", true, true) // wow what a great way to write readable and cool code, anyway thats all the spaces removed
+    bool OnOffense = false
+    if(MessageFilter){
     foreach(string word in Banned_words)
     {
         if( LowerMessage.find( word.tolower() ) == null && noSpaceMessage.find( word.tolower() ) == null)
@@ -98,6 +123,20 @@ string LowerMessage  = message.message.tolower()
    }
     message.message = AddMessageHighlighting(message.message)
     return message
+}
+
+ClServer_MessageStruct function HandleCommands(ClServer_MessageStruct message){
+    string msg = lstrip(message.message)
+    var prefixIndex = msg.find(CommandPrefix);
+    string prefixless = msg.slice(expect int(prefixIndex) + CommandPrefix.len(), msg.len());
+    array<string> args = split(prefixless, " ");
+    string commandName = args[0].tolower();
+    if(!(commandName in RegisteredCommands))
+        return message
+    args.remove(0)
+    RegisteredCommands[commandName](message.player, args)
+    message.shouldBlock = true
+    return message   
 }
 
 string function AddMessageHighlighting(string message) {
@@ -165,12 +204,12 @@ array<string> function GetConVarStringArray(string convar){
 void function OnClientConnected(entity player){
     if( HostNames.find( player.GetPlayerName() ) !=-1 && AnnounceHosts){
         Chat_ServerBroadcast("The server host: \x1b[38;5;51m"+player.GetPlayerName()+"\x1b[0m just joined the server")
-        return
     }
-    if( AdminNames.find( player.GetPlayerName() ) !=-1 && AnnounceAdmin){
+    else if( AdminNames.find( player.GetPlayerName() ) !=-1 && AnnounceAdmin){
         Chat_ServerBroadcast("A server admin: \x1b[38;5;51m"+player.GetPlayerName()+"\x1b[0m just joined the server")
-        return
     }
+    if(SendwelcomeMessage)
+        Chat_ServerPrivateMessage(player, welcomeMessage,false)
         
 }
 

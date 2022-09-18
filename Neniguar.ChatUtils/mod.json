@@ -63,6 +63,18 @@
 		{
 			"Name": "FSU_RGB_DIVIDE",
 			"DefaultValue": ","
+		},
+		{
+			"Name": "SendWelcomeMessage",
+			"DefaultValue": "1"
+		},
+		{
+			"Name": "WelcomeMessage",
+			"DefaultValue": "This server supports Neinguar.ChatUitls, type in colours with '@<colour>Text here', use ?colours for more information"
+		},
+		{
+			"Name": "CommandPrefix",
+			"DefaultValue": "?"
 		}
 	],
 
